@@ -230,14 +230,6 @@ export default {
   max-height: 150px;
 }
 
-.modal-header {
-
-}
-
-.modal-body {
-
-}
-
 .modal-enter-from {
   opacity: 0;
 }

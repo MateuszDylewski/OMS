@@ -86,7 +86,7 @@
               </div>
               <div class="form-row">
                 <div class="form-group col">
-                  <label for="sizeSelect">Uczestnicy</label>
+                  <label>Uczestnicy</label>
                   <Multiselect v-model="participants" :options="users" :multiple="true"
                                :close-on-select="false" :max-height="200"
                                :clear-on-select="false" :preserve-search="true"
@@ -331,14 +331,6 @@ export default {
 .description {
   min-height: 35px;
   max-height: 150px;
-}
-
-.modal-header {
-
-}
-
-.modal-body {
-
 }
 
 .modal-enter-from {
