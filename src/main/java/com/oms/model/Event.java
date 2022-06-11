@@ -15,15 +15,19 @@ public class Event {
     private User creator;
     private List<User> participants;
 
+    private String roomId;
+
 
     protected Event() {}
-    public Event(LocalDateTime startDateTime, int duration, String color, User creator, List<User> participants, String title) {
+    public Event(LocalDateTime startDateTime, int duration, String color,
+                 User creator, List<User> participants, String title, String roomId) {
         this.startDateTime = startDateTime;
         this.duration = duration;
         this.color = color;
         this.creator = creator;
         this.participants = participants;
         this.title = title;
+        this.roomId = roomId;
     }
 
     @Id
@@ -81,6 +85,15 @@ public class Event {
     }
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Basic
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 
     @Override

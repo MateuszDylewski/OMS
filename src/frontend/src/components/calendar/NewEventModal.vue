@@ -60,11 +60,17 @@
               </div>
               <div class="form-row">
                 <div class="form-group col">
-                  <label for="sizeSelect">Uczestnicy</label>
+                  <label>Uczestnicy</label>
                   <Multiselect v-model="participants" :options="users" :multiple="true" :close-on-select="false" :max-height="200"
                                :clear-on-select="false" :preserve-search="true" placeholder="" :limit="0" :limit-text="limitText"
                                label="displayName" track-by="userId" :searchable="true" :taggable="false" :open-direction="'top'"/>
                 </div>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" v-model="createRoom" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                  Zaznacz, aby utworzyć wideokonferencje do spotkania.
+                </label>
               </div>
               <div class="form-row">
                 <button type="submit" class="btn btn-primary btn-sm ml-auto">Zapisz</button>
@@ -80,6 +86,7 @@
 <script>
 import Multiselect from "vue-multiselect";
 import {loggedUserId} from "@/services/authentication/userAuthenticationService";
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
   components: { Multiselect },
@@ -94,7 +101,8 @@ export default {
       startDateTime: new Date(),
       duration: 0,
       color: 'primary',
-      creatorId: loggedUserId
+      creatorId: loggedUserId,
+      createRoom: false
     }
   },
   mounted() {
@@ -124,11 +132,11 @@ export default {
             form.classList.add('was-validated');
           });
       if(isFormCorrect){
-        this.saveSpace();
+        this.saveEvent();
         close()
       }
     },
-    saveSpace: async function () {
+    saveEvent: async function () {
       let ids = [];
       this.participants.forEach(obj => {
         Object.entries(obj).forEach(([key, value]) => {
@@ -147,7 +155,8 @@ export default {
           duration: this.duration,
           color: this.color,
           creatorId: this.creatorId,
-          participantsId: ids
+          participantsId: ids,
+          roomId: (this.createRoom ? uuidv4() : null)
         })
       }
       await fetch("/api/event/", requestOptions);

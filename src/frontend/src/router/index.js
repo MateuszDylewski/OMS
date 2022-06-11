@@ -34,7 +34,7 @@ const routes = [
         component: MyReservations
     },
     {
-        path: '/eventRoom',
+        path: '/calendar/eventRoom',
         name: EventRoom,
         component: EventRoom
     }

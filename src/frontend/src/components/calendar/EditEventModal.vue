@@ -96,7 +96,8 @@
                 </div>
               </div>
               <div class="form-row">
-                <button type="button" class="btn btn-primary btn-sm" @click="openEventRoom()">Otwórz okno spotkania</button>
+                <button type="button" class="btn btn-primary btn-sm"
+                        v-if="roomId !== null" @click="openEventRoom()">Otwórz okno spotkania</button>
                 <button type="button" class="btn btn-info btn-sm ml-auto"
                         v-if="!isEditModeEnabled && creator.userId === loggedUserIdLocal"
                         @click="isEditModeEnabled = true">Edytuj</button>
@@ -142,7 +143,8 @@ export default {
       durationBackUp: 0,
       color: '',
       colorBackUp: '',
-      creator: JSON
+      creator: JSON,
+      roomId: null
     }
   },
   mounted() {
@@ -175,6 +177,7 @@ export default {
                     + data.creator.lastName + " - "
                     + data.creator.occupation
               };
+              this.roomId = data.roomId;
               this.participants = data.participants.map(user => ({
                 userId: user.userId,
                 displayName: user.firstName + " " + user.lastName + " - " + user.occupation
@@ -189,8 +192,12 @@ export default {
   },
   methods: {
     openEventRoom: function() {
-      console.log("CLICK");
-      let route = this.$router.resolve({path: '/eventRoom'});
+      let route = this.$router.resolve({
+        path: '/calendar/eventRoom',
+        query: {
+          room: this.roomId
+        }
+      });
       window.open(route.href);
       
     },

@@ -12,8 +12,11 @@ let token = null;
 let client;
 
 const queryString = window.location.search;
+console.log(queryString);
 const urlParams = new URLSearchParams(queryString);
+console.log(urlParams);
 let roomId = urlParams.get('room');
+console.log(roomId);
 
 if(!roomId) {
     roomId = 'main';
@@ -38,8 +41,9 @@ let joinStream = async function() {
 
     let player = document.createElement('div');
     player.setAttribute('id', `user${uid}`);
+    player.classList.add('videoContainer');
 
-    videosGrid.append(player);
+    streamsContainer.append(player);
 
     localTracks[1].play(`user${uid}`);
 
@@ -55,8 +59,9 @@ let handleUserPublish = async function(user, mediaType) {
     if(player === null) {
         let player = document.createElement('div');
         player.setAttribute('id', `user${user.uid}`);
+        player.classList.add('videoContainer');
 
-        videosGrid.append(player);
+        streamsContainer.append(player);
     }
 
     if(mediaType === 'video') {
@@ -73,9 +78,14 @@ let handleUserLeft = async function(user) {
     document.getElementById(`user${user.uid}`).remove();
 }
 
+
+
+
+
+
 // import AgoraRTC from 'agora-rtc-sdk';
 
-// const APP_ID = "38ed5944474547f094897db886259afa";
+// const APP_ID = "xyz";
 
 // let uid = sessionStorage.getItem('uid');
 // if(!uid) {

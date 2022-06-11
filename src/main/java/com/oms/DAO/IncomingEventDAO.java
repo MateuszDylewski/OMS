@@ -12,21 +12,24 @@ public class IncomingEventDAO {
     private Long creatorId;
     private List<Long> participantsId;
 
+    private String roomId;
+
     protected IncomingEventDAO() {}
     public IncomingEventDAO(String title, LocalDateTime startDateTime,
                             int duration, String color, Long creatorId,
-                            List<Long> participantsId) {
+                            List<Long> participantsId, String roomId) {
         this.title = title;
         this.startDateTime = startDateTime;
         this.duration = duration;
         this.color = color;
         this.creatorId = creatorId;
         this.participantsId = participantsId;
+        this.roomId = roomId;
     }
 
     public IncomingEventDAO(Long eventId, String title, LocalDateTime startDateTime,
                             int duration, String color, Long creatorId,
-                            List<Long> participantsId) {
+                            List<Long> participantsId, String roomId) {
         this.eventId = eventId;
         this.title = title;
         this.startDateTime = startDateTime;
@@ -34,6 +37,7 @@ public class IncomingEventDAO {
         this.color = color;
         this.creatorId = creatorId;
         this.participantsId = participantsId;
+        this.roomId = roomId;
     }
 
     public Long getEventId() {
@@ -90,5 +94,13 @@ public class IncomingEventDAO {
 
     public void setParticipantsId(List<Long> participantsId) {
         this.participantsId = participantsId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }

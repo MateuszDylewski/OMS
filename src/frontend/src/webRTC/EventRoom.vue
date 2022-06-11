@@ -1,7 +1,7 @@
 <template>
   <div>
-    <button id="bt" type="button" @click="addVideo()">click</button>
-    <div id="videosGrid">
+    <div></div>
+    <div id="streamsContainer" >
     </div>
   </div>
 </template>
@@ -18,44 +18,36 @@ export default {
   },
   mounted() {
     joinRoomInit();
-  },
-  methods: {
-    async addVideo() {
-      console.log("CLICK");
-      const videosGrid = document.getElementById('videosGrid');
-      const newVideo = document.createElement('video');
-
-      newVideo.classList.add('video');
-      newVideo.srcObject = await navigator.mediaDevices.getUserMedia({ audio: false, video: true });
-      newVideo.addEventListener('loadedmetadata', function () {
-        newVideo.play();
-      });
-      videosGrid.append(newVideo);
-    }
   }
 }
 
 </script>
 
 <style scoped>
-div {
+/* div {
   border: 2px red solid;
-}
+} */
 
-#videosGrid {
-  min-height: calc(100vh - 40px);
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 320px);
-  grid-auto-rows: 250px;
+#streamsContainer {
+  display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-content: center;
+  margin-top: 20px;
+  gap: 20px;
 }
 
 </style>
 
 <style>
-.video {
-  height: 100%;
-  width: 100%;
-  padding: 10px;
+.videoContainer {
+  border: 2px solid grey;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  overflow: hidden;
+  height: 300px;
+  width: 300px;
 }
 </style>

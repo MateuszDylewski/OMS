@@ -65,7 +65,8 @@ public class EventController {
                 eventDAO.getColor(),
                 foundCreator,
                 foundParticipants,
-                eventDAO.getTitle()
+                eventDAO.getTitle(),
+                eventDAO.getRoomId()
         );
 
         eventRepository.save(newEvent);
