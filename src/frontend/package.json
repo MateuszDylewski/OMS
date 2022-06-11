@@ -13,7 +13,7 @@
     "@fortawesome/free-solid-svg-icons": "^5.15.4",
     "@fortawesome/vue-fontawesome": "^3.0.0-5",
     "@mdi/font": "5.9.55",
-    "agora-rtc-sdk": "^3.6.10",
+    "agora-rtc-sdk-ng": "^4.11.1",
     "bootstrap-vue": "^2.22.0",
     "core-js": "^3.6.5",
     "jquery": "^3.6.0",
