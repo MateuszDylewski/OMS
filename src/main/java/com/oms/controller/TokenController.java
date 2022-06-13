@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -22,7 +23,7 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @RestController
-@RequestMapping("/token")
+@RequestMapping("/api/token")
 public class TokenController {
 
     @Autowired
@@ -47,6 +48,8 @@ public class TokenController {
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim("role", roles)
                         .sign(algorithm);
+                response.addCookie(new Cookie("accessToken", accessToken));
+                response.addCookie(new Cookie("refreshToken", refreshToken));
                 Map<String, String> tokens = new HashMap<>();
                 tokens.put("accessToken", accessToken);
                 tokens.put("refreshToken", refreshToken);

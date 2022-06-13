@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
 import Users from "@/components/user/Users";
-import Home from "@/components/Home";
+import Login from "@/components/Login";
 import CalendarPage from '@/components/CalendarPage';
 import SpacePage from '@/components/space/Space';
 import MyReservations from "@/components/space/MyReservations";
@@ -10,8 +10,8 @@ import EventRoom from "../webRTC/EventRoom";
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'Login',
+        component: Login
     },
     {
         path: '/users',
