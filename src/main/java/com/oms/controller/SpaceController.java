@@ -4,7 +4,6 @@ import com.oms.exception.InvalidSpaceTypeException;
 import com.oms.exception.ResourceNotFoundException;
 import com.oms.model.*;
 import com.oms.repository.*;
-import com.oms.services.SpaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

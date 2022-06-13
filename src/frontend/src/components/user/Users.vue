@@ -30,90 +30,96 @@
           <span class="ml-auto mr-5">{{"p" + subordinate.userId}}</span>
         </div>
       </div>
+      <form class="details requires-validation" novalidate>
+        <div class="form-group information">
+          <label for="email">Email</label>
+          <input type="email" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="email"
+                  placeholder="Email" v-model="this.userToEdit.email"
+                  required>
+        </div>
+        <div class="form-group information" v-if="addModeOn">
+          <label for="password">Hasło</label>
+          <input type="password" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="password"
+                  placeholder="Hasło" v-model="this.userToEdit.password"
+                  required>
+        </div>
+        <div class="form-group information">
+          <label for="name">Imię</label>
+          <input type="text" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="name"
+                  placeholder="Imię" v-model="this.userToEdit.firstName"
+                  required>
+        </div>
+        <div class="form-group information">
+          <label for="surname">Nazwisko</label>
+          <input type="text" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="surname"
+                  placeholder="Nazwisko" v-model="this.userToEdit.lastName"
+                  required>
+        </div>
+        <div class="form-group information">
+          <label for="dob">Data urodzenia</label>
+          <v-date-picker v-model="this.userToEdit.dateOfBirth"
+                          :max-date="new Date()">
+            <template v-slot="{ inputValue, inputEvents }">
+              <input
+                  class="form-control"
+                  v-on="inputEvents"
+                  :value="inputValue"
+                  :disabled="!editModeOn && !addModeOn" id="dob"
+                  placeholder="DD-MM-YYYY"
+                  required
+              />
+            </template>
+          </v-date-picker>
 
-        <form class="details requires-validation" novalidate>
-          <div class="form-group information">
-            <label for="email">Email</label>
-            <input type="email" class="form-control"
-                   :disabled="!editModeOn && !addModeOn" id="email"
-                   placeholder="Email" v-model="this.userToEdit.email"
-                   required>
+        </div>
+        <div class="form-group information">
+          <label for="occupation">Stanowisko</label>
+          <input type="text" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="occupation"
+                  placeholder="Pracownik" v-model="this.userToEdit.occupation"
+                  required>
+        </div>
+        <div class="form-group information">
+          <label for="role">Rola</label>
+          <select class="form-control information"
+                  :disabled="!editModeOn && !addModeOn" id="role"
+                  v-model="this.userToEdit.userRole"
+                  required>
+            <option value="USER">User</option>
+            <option value="HRUSER">HRUser</option>
+            <option value="ADMIN">Admin</option>
+          </select>
+        </div>
+        <div class="form-group information">
+          <label for="manager">Menadżer</label>
+          <input type="number" class="form-control"
+                  :disabled="!editModeOn && !addModeOn" id="manager"
+                  placeholder="Brak" v-model="this.userToEdit.managerId">
+        </div>
+        <div class="form-group d-flex">
+          <div class="information " @click="addModeOn = !addModeOn; userToEdit = {}; " v-if="!editModeOn && !addModeOn">
+            <button type="button" class="btn btn-info btn-sm">Dodaj użytkownika</button>
           </div>
-          <div class="form-group information">
-            <label for="name">Imię</label>
-            <input type="text" class="form-control"
-                   :disabled="!editModeOn && !addModeOn" id="name"
-                   placeholder="Imię" v-model="this.userToEdit.firstName"
-                   required>
+          <div class="information ml-auto" @click="editModeOn = !editModeOn" v-if="!editModeOn && !addModeOn">
+            <button type="button" class="btn btn-info btn-sm" :disabled="!ifUserSelected">Edytuj</button>
           </div>
-          <div class="form-group information">
-            <label for="surname">Nazwisko</label>
-            <input type="text" class="form-control"
-                   :disabled="!editModeOn && !addModeOn" id="surname"
-                   placeholder="Nazwisko" v-model="this.userToEdit.lastName"
-                   required>
+          <div class="information" v-if="editModeOn && !addModeOn">
+            <button type="button" class="btn btn-danger btn-sm" @click="deleteUser()">Usuń</button>
           </div>
-          <div class="form-group information">
-            <label for="dob">Data urodzenia</label>
-            <v-date-picker v-model="this.userToEdit.dateOfBirth"
-                           :max-date="new Date()">
-              <template v-slot="{ inputValue, inputEvents }">
-                <input
-                    class="form-control"
-                    v-on="inputEvents"
-                    :value="inputValue"
-                    :disabled="!editModeOn && !addModeOn" id="dob"
-                    placeholder="DD-MM-YYYY"
-                    required
-                />
-              </template>
-            </v-date-picker>
-
+          <div class="information ml-auto" @click="
+          editModeOn = (editModeOn ? !editModeOn:editModeOn); addModeOn = (addModeOn ? !addModeOn : addModeOn); revertChanges();" v-if="editModeOn || addModeOn
+          ">
+            <button type="button" class="btn btn-warning btn-sm">Anuluj</button>
           </div>
-          <div class="form-group information">
-            <label for="occupation">Stanowisko</label>
-            <input type="text" class="form-control"
-                   :disabled="!editModeOn && !addModeOn" id="occupation"
-                   placeholder="Pracownik" v-model="this.userToEdit.occupation"
-                   required>
+          <div class="information" v-if="editModeOn || addModeOn">
+            <button type="submit" class="btn btn-primary btn-sm" @click="submit">Zapisz</button>
           </div>
-          <div class="form-group information">
-            <label for="role">Rola</label>
-            <select class="form-control information"
-                    :disabled="!editModeOn && !addModeOn" id="role"
-                    v-model="this.userToEdit.userRole"
-                    required>
-              <option value="USER">User</option>
-              <option value="HRUSER">HRUser</option>
-              <option value="ADMIN">Admin</option>
-            </select>
-          </div>
-          <div class="form-group information">
-            <label for="manager">Menadżer</label>
-            <input type="number" class="form-control"
-                   :disabled="!editModeOn && !addModeOn" id="manager"
-                   placeholder="Brak" v-model="this.userToEdit.managerId">
-          </div>
-          <div class="form-group d-flex">
-            <div class="information " @click="addModeOn = !addModeOn; userToEdit = {}; " v-if="!editModeOn && !addModeOn">
-              <button type="button" class="btn btn-info btn-sm">Dodaj użytkownika</button>
-            </div>
-            <div class="information ml-auto" @click="editModeOn = !editModeOn" v-if="!editModeOn && !addModeOn">
-              <button type="button" class="btn btn-info btn-sm" :disabled="!ifUserSelected">Edytuj</button>
-            </div>
-            <div class="information" v-if="editModeOn && !addModeOn">
-              <button type="button" class="btn btn-danger btn-sm" @click="deleteUser()">Usuń</button>
-            </div>
-            <div class="information ml-auto" @click="
-            editModeOn = (editModeOn ? !editModeOn:editModeOn); addModeOn = (addModeOn ? !addModeOn : addModeOn); revertChanges();" v-if="editModeOn || addModeOn
-            ">
-              <button type="button" class="btn btn-warning btn-sm">Anuluj</button>
-            </div>
-            <div class="information" v-if="editModeOn || addModeOn">
-              <button type="submit" class="btn btn-primary btn-sm" @click="submit">Zapisz</button>
-            </div>
-          </div>
-        </form>
+        </div>
+      </form>
     </div>
   </div>
 </template>
@@ -242,6 +248,7 @@ export default {
             body: JSON.stringify({
               userId: this.userToEdit.userId,
               email: this.userToEdit.email,
+              password: null,
               firstName: this.userToEdit.firstName,
               lastName: this.userToEdit.lastName,
               dateOfBirth: this.userToEdit.dateOfBirth,
@@ -258,6 +265,7 @@ export default {
             body: JSON.stringify({
               userId: this.userToEdit.userId,
               email: this.userToEdit.email,
+              password: this.userToEdit.password,
               firstName: this.userToEdit.firstName,
               lastName: this.userToEdit.lastName,
               dateOfBirth: this.userToEdit.dateOfBirth,

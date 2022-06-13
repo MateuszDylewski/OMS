@@ -10,6 +10,7 @@ import com.oms.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -23,9 +24,11 @@ import java.util.Objects;
 public class UserController {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
     @Autowired
-    ReservationRepository reservationRepository;
+    private ReservationRepository reservationRepository;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("")
     public List<OutgoingUserDAO> getUsers(){
@@ -102,6 +105,7 @@ public class UserController {
                 userDAO.getFirstName(),
                 userDAO.getLastName(),
                 userDAO.getEmail(),
+                passwordEncoder.encode(userDAO.getPassword()),
                 userDAO.getOccupation(),
                 foundManager,
                 userDAO.getDateOfBirth(),

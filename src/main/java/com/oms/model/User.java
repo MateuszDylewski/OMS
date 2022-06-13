@@ -15,6 +15,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String occupation;
     private User manager;
     private LocalDate dateOfBirth;
@@ -23,11 +24,12 @@ public class User {
 
     protected User() {}
     public User(String firstName, String lastName,
-                String email, String occupation, User manager, LocalDate dateOfBirth,
+                String email, String password, String occupation, User manager, LocalDate dateOfBirth,
                 UserRole userRole) {
         setFirstName(firstName);
         setLastName(lastName);
         setEmail(email);
+        setPassword(password);
         setOccupation(occupation);
         setManager(manager);
         setDateOfBirth(dateOfBirth);
@@ -87,6 +89,13 @@ public class User {
         }
 
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @OneToOne

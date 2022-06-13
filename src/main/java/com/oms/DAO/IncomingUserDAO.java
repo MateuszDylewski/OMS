@@ -10,18 +10,20 @@ public class IncomingUserDAO {
     private String firstName;
     private String lastName;
     private String email;
+    private String password;
     private String occupation;
     private LocalDate dateOfBirth;
     private UserRole userRole;
     private Long managerId;
 
     public IncomingUserDAO(Long userId, String firstName, String lastName,
-                           String email, String occupation, LocalDate dateOfBirth,
+                           String email, String password, String occupation, LocalDate dateOfBirth,
                            UserRole userRole, Long managerId) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
         this.occupation = occupation;
         this.dateOfBirth = dateOfBirth;
         this.userRole = userRole;
@@ -58,6 +60,14 @@ public class IncomingUserDAO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getOccupation() {
@@ -99,9 +109,10 @@ public class IncomingUserDAO {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
                 ", occupation='" + occupation + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
-                ", role=" + userRole +
+                ", userRole=" + userRole +
                 ", managerId=" + managerId +
                 '}';
     }
