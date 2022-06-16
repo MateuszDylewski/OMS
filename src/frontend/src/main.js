@@ -9,6 +9,8 @@ import 'bootstrap';
 import '../node_modules/bootstrap/scss/bootstrap.scss';
 import { defineComponent } from "vue";
 import Popper from "vue3-popper";
+import Vuex from 'vuex';
+import store from './vuex';
 
 export default defineComponent({
     components: {
@@ -19,7 +21,10 @@ export default defineComponent({
 library.add(fas);
 
 createApp(App)
+    .use(Vuex)
+    .use(store)
     .use(router)
     .use(VCalendar, {})
     .component('fa', FontAwesomeIcon)
     .mount('#app');
+

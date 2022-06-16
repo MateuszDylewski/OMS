@@ -3,6 +3,10 @@ package com.oms.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oms.repository.UserRepository;
+import com.oms.services.UserService;
+import com.sun.tools.jconsole.JConsoleContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -34,7 +38,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
-        System.out.println("SOMEONE LOGGED IN");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(email, password);
@@ -53,12 +56,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .sign(algorithm);
         String refreshToken = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 30*60*1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + 60*60*1000))
                 .withIssuer(request.getRequestURL().toString())
                 .sign(algorithm);
-
-        response.addCookie(new Cookie("accessToken", accessToken));
-        response.addCookie(new Cookie("refreshToken", refreshToken));
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        response.addCookie(accessTokenCookie);
+        response.addCookie(refreshTokenCookie);
         /*response.setHeader("accessToken", accessToken);
         response.setHeader("refreshToken", refreshToken);*/
         Map<String, String> tokens = new HashMap<>();

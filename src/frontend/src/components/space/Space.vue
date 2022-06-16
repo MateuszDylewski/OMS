@@ -13,7 +13,7 @@
       <button class="btn btn-link ml-auto btn-sm" @click="showFilters = !showFilters">Filtry</button>
       <button class="addSpaceButton btn btn-link btn-sm"
               @click="showAddSpaceModal = true"
-              v-if="this.userRole === 'ADMIN' || this.userRole === 'HRUSER'">
+              v-if="user.userRole === 'ADMIN' || user.userRole === 'HRUSER'">
         Dodaj miejsce
       </button>
       <Teleport to="body">
@@ -91,22 +91,22 @@
                 </button>
                 <button class="actions btn btn-warning btn-sm btn-rounded ml-2"
                         @click="changeBlockedStatus(space.spaceId)"
-                        v-if="!space.blocked && ( this.userRole === 'ADMIN' || this.userRole === 'HRUSER')">
+                        v-if="!space.blocked && ( user.userRole === 'ADMIN' || user.userRole === 'HRUSER')">
                   Blokuj
                 </button>
                 <button class="actions btn btn-warning btn-sm btn-rounded ml-2"
                         @click="changeBlockedStatus(space.spaceId)"
-                        v-else-if="this.userRole === 'ADMIN' || this.userRole === 'HRUSER'">
+                        v-else-if="user.userRole === 'ADMIN' || user.userRole === 'HRUSER'">
                   Odblokuj
                 </button>
                 <button class="actions btn btn-info btn-sm btn-rounded ml-2"
                         @click="showEditSpaceModal = true; actionSpace = space"
-                        v-if="this.userRole === 'ADMIN' || this.userRole === 'HRUSER'">
+                        v-if="user.userRole === 'ADMIN' || user.userRole === 'HRUSER'">
                   Edytuj
                 </button>
                 <button class="actions btn btn-danger btn-sm btn-rounded ml-2"
                         @click="deleteSpace(space.spaceId, space.type)"
-                        v-if="this.userRole === 'ADMIN' || this.userRole === 'HRUSER'">
+                        v-if="user.userRole === 'ADMIN'">
                   Usuń
                 </button>
               </div>
@@ -115,6 +115,7 @@
         </tbody>
       </table>
     </div>
+
   </div>
 </template>
 
@@ -122,7 +123,8 @@
 import AddSpaceModal from "@/components/space/AddSpaceModal";
 import ReservationModal from "@/components/space/ReservationModal";
 import EditSpaceModal from "@/components/space/EditSpaceModal";
-import { loggedUserRole } from "@/services/authentication/userAuthenticationService";
+import { getCookie } from "../../services/authentication/userAuthenticationService";
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'SpaceTable',
@@ -148,11 +150,15 @@ export default {
       showFilters: false,
       showSearch: false,
 
-      userRole: loggedUserRole,
+      //userRole: '',
     }
   },
   mounted() {
-    fetch(`/api/spaces/`)
+    fetch(`/api/spaces/`, {
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    })
       .then(response => response.json())
       .then(data => {
         this.spaces = data.map(space => ({
@@ -194,7 +200,10 @@ export default {
     changeBlockedStatus: async function (spaceId) {
       const requestOptions = {
         method: "PUT",
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        }
       };
       await fetch(`/api/spaces/changeBlockStatus/${spaceId}`, requestOptions)
         .then(response => response.json());
@@ -203,7 +212,10 @@ export default {
     deleteSpace: async function (spaceId, type) {
       const requestOptions = {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" }
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        }
       };
       await fetch(`/api/spaces/deleteSpace/${spaceId}/${type}`, requestOptions)
           .then(response => response.json());
@@ -211,6 +223,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['user']),
     filterTable() {
       return this.spaces.filter(row => {
         const name = row.name.toString().toLowerCase();

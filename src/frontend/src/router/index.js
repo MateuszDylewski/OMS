@@ -5,13 +5,14 @@ import CalendarPage from '@/components/CalendarPage';
 import SpacePage from '@/components/space/Space';
 import MyReservations from "@/components/space/MyReservations";
 import EventRoom from "../webRTC/EventRoom";
+import Home from "../components/Home";
 
 
 const routes = [
     {
         path: '/',
-        name: 'Login',
-        component: Login
+        name: 'Home',
+        component: Home
     },
     {
         path: '/users',
@@ -35,8 +36,13 @@ const routes = [
     },
     {
         path: '/calendar/eventRoom',
-        name: EventRoom,
+        name: 'EventRoom',
         component: EventRoom
+    },
+    {
+        path: '/login',
+        name: 'Login',
+        component: Login
     }
 ]
 

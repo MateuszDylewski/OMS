@@ -5,20 +5,37 @@
     </div>
     <div class="links">
       <SidebarLink icon="home" to="/">Początek</SidebarLink>
-      <SidebarLink icon="users" to="/users">Użytkownicy</SidebarLink>
       <SidebarLink icon="calendar" to="/calendar">Kalendarz</SidebarLink>
+      <SidebarLink icon="users" to="/users" v-if="user.userRole === 'ADMIN' || user.userRole === 'HRUSER'">Użytkownicy</SidebarLink>
       <SidebarLink icon="desktop" to="/space">Miejsca</SidebarLink>
       <SidebarLink icon="book" to="/myReservations">Moje rezerwacje</SidebarLink>
     </div>
+    <button class="btn btn-secondary logoutButton" @click="logout">
+      Wyloguj
+    </button>
   </div>
 </template>
 
 <script>
   import SidebarLink from "@/components/sidebar/SidebarLink";
+  import { deleteCookie } from "../../services/authentication/userAuthenticationService";
+  import { mapGetters } from "vuex";
 
   export default {
     props: {},
     components: {SidebarLink},
+    computed: {
+      ...mapGetters(['user'])
+    },
+    methods: {
+      logout: function (){
+        deleteCookie('refreshToken');
+        deleteCookie('accessToken');
+        sessionStorage.clear();
+        this.$store.dispatch('user', null);
+        this.$router.push('/login');
+      }
+    }
   }
 </script>
 
@@ -46,6 +63,13 @@
   font-size: 180%;
   font-weight: bold;
   text-align: center;
+}
+
+.logoutButton {
+  position: absolute;
+  top: calc(100vh - 50px);
+  left: 50px;
+  width: 100px;
 }
 
 .oms {

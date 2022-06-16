@@ -94,6 +94,7 @@
 </template>
 
 <script>
+import { getCookie } from '../../services/authentication/userAuthenticationService';
 
 export default {
   props: {
@@ -129,7 +130,10 @@ export default {
         case "desk":
           requestOptions = {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               spaceId: this.editedSpace.spaceId,
               name: this.editedSpace.name,
@@ -145,7 +149,10 @@ export default {
         case "room":
           requestOptions = {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               spaceId: this.editedSpace.spaceId,
               name: this.editedSpace.name,
@@ -162,7 +169,10 @@ export default {
         case "parking":
           requestOptions = {
             method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               spaceId: this.editedSpace.spaceId,
               name: this.editedSpace.name,

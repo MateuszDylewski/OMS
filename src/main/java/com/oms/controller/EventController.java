@@ -35,7 +35,7 @@ public class EventController {
 
     @GetMapping("/{userId}")
     public List<OutgoingEventDAO> getEventsForUser(@PathVariable Long userId) {
-        List<Event> foundEvents = eventRepository.getEventsUserParticipateIn(1L);
+        List<Event> foundEvents = eventRepository.getEventsUserParticipateIn(userId);
         List<OutgoingEventDAO> preparedEvents = new ArrayList<>();
         foundEvents.forEach(event -> {
             preparedEvents.add(new OutgoingEventDAO(

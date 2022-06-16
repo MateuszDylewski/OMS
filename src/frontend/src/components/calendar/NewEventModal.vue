@@ -85,8 +85,8 @@
 
 <script>
 import Multiselect from "vue-multiselect";
-import {loggedUserId} from "@/services/authentication/userAuthenticationService";
 import { v4 as uuidv4 } from 'uuid';
+import { getCookie } from "../../services/authentication/userAuthenticationService";
 
 export default {
   components: { Multiselect },
@@ -101,19 +101,22 @@ export default {
       startDateTime: new Date(),
       duration: 0,
       color: 'primary',
-      creatorId: loggedUserId,
       createRoom: false
     }
   },
   mounted() {
-    fetch(`/api/users/without/${loggedUserId}`)
-        .then(response => response.json())
-        .then(data => {
-          this.users = data.map(user => ({
-            userId: user.userId,
-            displayName: user.firstName + " " + user.lastName + " - " + user.occupation
-          }))
-        });
+    fetch(`/api/users/without/${sessionStorage.getItem('userId')}`, {
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.users = data.map(user => ({
+          userId: user.userId,
+          displayName: user.firstName + " " + user.lastName + " - " + user.occupation
+        }))
+      });
   },
   methods: {
     limitText (count) {
@@ -148,13 +151,16 @@ export default {
 
       const requestOptions = {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        },
         body: JSON.stringify({
           title: this.title,
           startDateTime: this.startDateTime,
           duration: this.duration,
           color: this.color,
-          creatorId: this.creatorId,
+          creatorId: sessionStorage.getItem('userId'),
           participantsId: ids,
           roomId: (this.createRoom ? uuidv4() : null)
         })

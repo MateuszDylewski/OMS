@@ -1,9 +1,7 @@
 <template>
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
   <div class="app">
-    <SideBar class="sidebar"/>
-    <SidebarMobile class="sidebarMobile"/>
+    <SideBar class="sidebar" v-if="user"/>
+    <SidebarMobile class="sidebarMobile" v-if="user"/>
     <router-view class="mainBox"/>
   </div>
 </template>
@@ -17,14 +15,50 @@
 </style>
 
 <script>
-import SideBar from "./components/sidebar/SideBar";
-import SidebarMobile from "@/components/sidebar/SidebarMobile";
+import SideBar from './components/sidebar/SideBar';
+import SidebarMobile from '@/components/sidebar/SidebarMobile';
+import { mapGetters } from 'vuex';
+import { getCookie, setCookie, deleteCookie } from './services/authentication/userAuthenticationService';
 
 export default {
   name: 'App',
   components: {
     SidebarMobile,
     SideBar
+  },
+  computed: {
+    ...mapGetters(['user'])
+  },
+  mounted() {
+    const refreshToken = getCookie('refreshToken');
+    fetch(`/token/refresh`, {
+        headers: {
+            'Authorization': 'Bearer ' + refreshToken
+        }
+    })
+      .then(response => {
+        if(response.status === 200) {
+          response.json().then(data => {
+            setCookie('accessToken', data.accessToken, 1);
+            fetch(`/api/users/byEmail`, {
+              headers: {
+                'Authorization': 'Bearer ' + getCookie('accessToken')
+              }
+            })
+            .then(response => response.json())
+            .then(data => {
+              sessionStorage.setItem('userId', data.userId);
+              this.$store.dispatch('user', data);
+            });
+          });
+        } else {
+          deleteCookie('refreshToken');
+          deleteCookie('accessToken');
+          sessionStorage.clear();
+          this.$store.dispatch('user', null);
+          this.$router.push('/login');
+        }
+      })
   }
 }
 </script>

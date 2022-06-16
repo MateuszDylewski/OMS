@@ -1,6 +1,5 @@
 <template>
   <div>
-    <div></div>
     <div id="streamsContainer" >
     </div>
   </div>
@@ -36,11 +35,11 @@ export default {
   margin-top: 20px;
   gap: 20px;
 }
-
 </style>
 
 <style>
 .videoContainer {
+  background-color: #D3D3D3;
   border: 2px solid grey;
   border-radius: 5px;
   display: flex;

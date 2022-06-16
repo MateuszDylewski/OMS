@@ -37,12 +37,11 @@ public class SecutiryConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers(GET, "/login/**", "/token/refresh/**").permitAll();
-        http.authorizeRequests().antMatchers(GET, "/api/**").permitAll();//.hasAnyAuthority("USER", "HRUSER", "ADMIN");
-        http.authorizeRequests().anyRequest().permitAll();
-        http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.addFilterBefore(new AutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().antMatchers(GET, "/login", "/token/refresh").permitAll();
+        http.authorizeRequests().anyRequest().hasAnyAuthority("USER", "HRUSER", "ADMIN");
+        http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
     }
 }

@@ -23,7 +23,7 @@
 import Calendar from './calendar/Calendar.vue';
 import CalendarCompactView from './calendar/CalendarCompactView.vue';
 import NewEventModal from "@/components/calendar/NewEventModal";
-import {loggedUserId} from "@/services/authentication/userAuthenticationService";
+import { getCookie } from '../services/authentication/userAuthenticationService';
 
 export default {
   components: {
@@ -38,10 +38,16 @@ export default {
     }
   },
   mounted() {
-    fetch("/api/event/" + loggedUserId)
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    }
+    fetch("/api/event/" + sessionStorage.getItem('userId'), requestOptions)
         .then(response => response.json())
         .then(data => {
-          this.events = data
+          this.events = data;
         });
   }
 }

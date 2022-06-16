@@ -1,5 +1,9 @@
 package com.oms.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.oms.DAO.IncomingUserDAO;
 import com.oms.DAO.OutgoingUserDAO;
 import com.oms.exception.ResourceNotFoundException;
@@ -29,6 +33,16 @@ public class UserController {
     private ReservationRepository reservationRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @GetMapping("/byEmail")
+    public User getUserByEmail(@RequestHeader String authorization) {
+        String token = authorization.substring("Bearer ".length());
+        Algorithm algorithm = Algorithm.HMAC256("omsrzadzicalymduzymswiatem".getBytes());
+        JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = jwtVerifier.verify(token);
+        String email = decodedJWT.getSubject();
+        return userRepository.findByEmail(email);
+    }
 
     @GetMapping("")
     public List<OutgoingUserDAO> getUsers(){
@@ -126,6 +140,12 @@ public class UserController {
         } catch (ResourceNotFoundException ex) {
             System.out.println(ex);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        List<User> subordinates = userRepository.findByManager(foundUser);
+        for(User subordinate : subordinates) {
+            subordinate.setManager(null);
+            userRepository.save(subordinate);
         }
         List<Reservation> foundReservations = reservationRepository.findReservationsByUser(foundUser.getUserId());
 

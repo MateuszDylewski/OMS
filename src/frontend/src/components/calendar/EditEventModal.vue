@@ -97,9 +97,9 @@
               </div>
               <div class="form-row">
                 <button type="button" class="btn btn-primary btn-sm"
-                        v-if="roomId !== null" @click="openEventRoom()">Otwórz okno spotkania</button>
+                        v-if="roomId !== null && !isEditModeEnabled" @click="openEventRoom()">Otwórz okno spotkania</button>
                 <button type="button" class="btn btn-info btn-sm ml-auto"
-                        v-if="!isEditModeEnabled && creator.userId === loggedUserIdLocal"
+                        v-if="!isEditModeEnabled && creator.userId === user.userId"
                         @click="isEditModeEnabled = true">Edytuj</button>
                 <button type="button" class="btn btn-danger btn-sm"
                         v-if="isEditModeEnabled"
@@ -120,7 +120,8 @@
 
 <script>
 import Multiselect from "vue-multiselect";
-import {loggedUserId} from "@/services/authentication/userAuthenticationService";
+import { mapGetters } from "vuex";
+import { getCookie } from "../../services/authentication/userAuthenticationService";
 
 export default {
   components: { Multiselect },
@@ -130,7 +131,7 @@ export default {
   },
   data() {
     return {
-      loggedUserIdLocal: loggedUserId,
+      //loggedUserIdLocal: sessionStorage.getItem('uid'),
       isEditModeEnabled: false,
       users: [],
       participants: [],
@@ -147,20 +148,31 @@ export default {
       roomId: null
     }
   },
+  computed: {
+    ...mapGetters(['user'])
+  },
   mounted() {
-    fetch(`/api/users/without/${loggedUserId}`)
-        .then(response => response.json())
-        .then(data => {
-          this.users = data.map(user => ({
-            userId: user.userId,
-            displayName: user.firstName + " " + user.lastName + " - " + user.occupation
-          }))
-        });
+    fetch(`/api/users/without/${sessionStorage.getItem('userId')}`, {
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.users = data.map(user => ({
+          userId: user.userId,
+          displayName: user.firstName + " " + user.lastName + " - " + user.occupation
+        }))
+      });
   },
   watch: {
     show: async function() {
       if(this.show === true) {
-        await fetch(`api/event/getEvent/${this.eventId}`)
+        await fetch(`api/event/getEvent/${this.eventId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + getCookie('accessToken')
+          }
+        })
             .then(response => response.json())
             .then(data => {
               this.title = data.title;
@@ -209,7 +221,7 @@ export default {
       this.color = this.colorBackUp;
     },
     isReadOnly: function() {
-      return !(this.creator.userId === loggedUserId && this.isEditModeEnabled);
+      return !(this.creator.userId === sessionStorage.getItem('userId') || this.isEditModeEnabled);
     },
     limitText: function (count) {
       return `${count} uczestników`
@@ -240,17 +252,19 @@ export default {
           }
         });
       });
-
       const requestOptions = {
         method: "PUT",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        },
         body: JSON.stringify({
           eventId: this.eventId,
           title: this.title,
           startDateTime: this.startDateTime,
           duration: this.duration,
           color: this.color,
-          creatorId: 1,
+          creatorId: sessionStorage.getItem('userId'),
           participantsId: ids
         })
       }
@@ -259,7 +273,10 @@ export default {
     deleteEvent: async function () {
       const requestOptions = {
         method: "DELETE",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        },
       }
       await fetch(`/api/event/delete/${this.eventId}`, requestOptions);
       window.location.reload();
@@ -269,9 +286,6 @@ export default {
 </script>
 
 <style scoped>
-/*div {
-  border: red 1px solid;
-}*/
 .box {
   float: left;
   height: 20px;

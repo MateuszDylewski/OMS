@@ -93,6 +93,7 @@
 </template>
 
 <script>
+import { getCookie } from '../../services/authentication/userAuthenticationService';
 
 export default {
   props: {
@@ -133,7 +134,10 @@ export default {
         case "desk":
           requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               name: this.selectedName,
               type: this.selectedType,
@@ -147,7 +151,10 @@ export default {
         case "room":
           requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               name: this.selectedName,
               type: this.selectedType,
@@ -163,7 +170,10 @@ export default {
         case "parking":
           requestOptions = {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+            },
             body: JSON.stringify({
               name: this.selectedName,
               type: this.selectedType,

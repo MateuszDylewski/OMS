@@ -44,7 +44,8 @@
 </template>
 
 <script>
-import {loggedUserId} from "@/services/authentication/userAuthenticationService";
+import { mapGetters } from "vuex"
+import { getCookie } from "../../services/authentication/userAuthenticationService";
 
 export default {
   name: 'MyReservations',
@@ -57,29 +58,32 @@ export default {
     }
   },
   mounted() {
-    fetch(`/api/reservation/usersReservations/${loggedUserId}`)
-        .then(response => response.json())
-        .then(data => {
-          this.reservations = data.map(reservation => ({
-            reservationId: reservation.reservationId,
-            space: {
-              spaceId: reservation.space.spaceId,
-              name: reservation.space.name,
-              type: reservation.space.type,
-              floor: reservation.space.floor.toString(),
-              description: reservation.space.description,
-              size: (reservation.space.size == null ? (reservation.space.area == null ? '' : reservation.space.area + 'm2') : reservation.space.size.toString()),
-              allowedAttendees: reservation.space.allowedAttendees == null ? '' : reservation.space.allowedAttendees.toString(),
-              blocked: reservation.space.blocked
-            },
-            startDate: reservation.startDate,
-            endDate: reservation.endDate
-          }))
-        });
+    fetch(`/api/reservation/usersReservations/${sessionStorage.getItem('userId')}`, {
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.reservations = data.map(reservation => ({
+          reservationId: reservation.reservationId,
+          space: {
+            spaceId: reservation.space.spaceId,
+            name: reservation.space.name,
+            type: reservation.space.type,
+            floor: reservation.space.floor.toString(),
+            description: reservation.space.description,
+            size: (reservation.space.size == null ? (reservation.space.area == null ? '' : reservation.space.area + 'm2') : reservation.space.size.toString()),
+            allowedAttendees: reservation.space.allowedAttendees == null ? '' : reservation.space.allowedAttendees.toString(),
+            blocked: reservation.space.blocked
+          },
+          startDate: reservation.startDate,
+          endDate: reservation.endDate
+        }))
+      });
   },
   methods: {
     translateSize: function (size) {
-      console.log(size);
       if(size === "LARGE"){
         return "Duże";
       } else if(size ==="REGULAR") {
@@ -92,10 +96,11 @@ export default {
     cancleReservation: async function (reservationId) {
       const requestOptions = {
         method: "DELETE",
+        headers: {
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        }
       };
-      await fetch(`/api/reservation/${reservationId}`, requestOptions)
-          .then(response => response.json())
-          .then(response => console.log(response));
+      await fetch(`/api/reservation/${reservationId}`, requestOptions);
       window.location.reload();
     }
   },

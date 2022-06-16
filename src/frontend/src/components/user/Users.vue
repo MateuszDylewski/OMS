@@ -125,6 +125,8 @@
 </template>
 
 <script>
+import {getCookie} from '../../services/authentication/userAuthenticationService';
+
 export default {
   data() {
     return {
@@ -140,10 +142,16 @@ export default {
       addModeOn: false
     }
   },
-  mounted() {
-    fetch(`/api/users`)
-        .then(response => response.json())
-        .then(data => this.users = data);
+  async mounted() {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + getCookie('accessToken')
+      }
+    }
+    fetch(`/api/users`, requestOptions)
+      .then(response => response.json())
+      .then(data => this.users = data);
   },
   methods: {
     selectUser: function (selectedUser) {
@@ -218,8 +226,11 @@ export default {
     },
     deleteUser: async function () {
       const requestOptions = {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" }
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+          }
       };
       await fetch(`/api/users/${this.userToEdit.userId}`, requestOptions)
           .then(response => response.json());
@@ -243,8 +254,11 @@ export default {
       if(isFormCorrect) {
         if (this.editModeOn) {
           requestOptions = {
-            method: "PUT",
-            headers: {"Content-Type": "application/json"},
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+              },
             body: JSON.stringify({
               userId: this.userToEdit.userId,
               email: this.userToEdit.email,
@@ -261,7 +275,10 @@ export default {
         } else if (this.addModeOn) {
           requestOptions = {
             method: "POST",
-            headers: {"Content-Type": "application/json"},
+            headers: {
+              "Content-Type": "application/json",
+              'Authorization': 'Bearer ' + getCookie('accessToken')
+              },
             body: JSON.stringify({
               userId: this.userToEdit.userId,
               email: this.userToEdit.email,

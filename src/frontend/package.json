@@ -25,7 +25,9 @@
     "vue": "^3.0.0",
     "vue-multiselect": "^3.0.0-alpha.2",
     "vue-router": "^4.0.12",
-    "vue3-popper": "^1.4.2"
+    "vue3-popper": "^1.4.2",
+    "vuex": "^4.0.2",
+    "vuex-persistedstate": "^4.1.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

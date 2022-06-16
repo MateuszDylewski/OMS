@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import {loggedUserId } from "@/services/authentication/userAuthenticationService";
+import { getCookie } from '../../services/authentication/userAuthenticationService';
 
 export default {
   props: {
@@ -79,14 +79,18 @@ export default {
     show: async function() {
       this.range.start = new Date();
       this.range.end = new Date();
-      await fetch(`/api/reservation/${this.space.spaceId}`)
-          .then(response => response.json())
-          .then(data => {
-            this.reservations = data.map(reservation => ({
-              start: reservation.startDate,
-              end: reservation.endDate,
-            }));
-          });
+      await fetch(`/api/reservation/${this.space.spaceId}`, {
+        headers: {
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          this.reservations = data.map(reservation => ({
+            start: reservation.startDate,
+            end: reservation.endDate,
+          }));
+        });
     }
   },
   methods: {
@@ -116,12 +120,15 @@ export default {
     saveReservation: async function() {
       const requestOptions = {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
+        headers: {
+          "Content-Type": "application/json",
+          'Authorization': 'Bearer ' + getCookie('accessToken')
+        },
         body: JSON.stringify({
           spaceId: this.space.spaceId,
           startDate: this.convertDate(this.range.start),
           endDate: this.convertDate(this.range.end),
-          userId: loggedUserId
+          userId: sessionStorage.getItem('userId')
         })
       };
       await fetch("/api/reservation", requestOptions)
