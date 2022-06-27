@@ -8,9 +8,6 @@
 import { mapGetters } from "vuex";
 
 export default ({
-    setup() {
-        
-    },
     computed: {
     ...mapGetters(['user'])
     },

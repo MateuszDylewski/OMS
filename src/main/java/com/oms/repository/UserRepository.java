@@ -10,10 +10,11 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    User findByEmail(String email);
+    //SELECT * FROM user WHERE email = {email};
+
     @Query("SELECT u FROM User u WHERE u.manager.userId = :managerId")
     List<User> findSubordinates(Long managerId);
-
-    User findByEmail(String email);
 
     List<User> findByManager(User manager);
 }

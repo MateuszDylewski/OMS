@@ -20,6 +20,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 public class SecutiryConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+        http.sessionManagement().sessionCreationPolicy(STATELESS);
+        http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
+        http.addFilterBefore(new AutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.authorizeRequests().antMatchers(GET, "/login", "/token/refresh").permitAll();
+        http.authorizeRequests().anyRequest().hasAnyAuthority("USER", "HRUSER", "ADMIN");
+    }
     @Autowired
     private UserDetailsService userDetailsService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
@@ -35,13 +45,5 @@ public class SecutiryConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.addFilterBefore(new AutorizationFilter(), UsernamePasswordAuthenticationFilter.class);
-        http.authorizeRequests().antMatchers(GET, "/login", "/token/refresh").permitAll();
-        http.authorizeRequests().anyRequest().hasAnyAuthority("USER", "HRUSER", "ADMIN");
-        http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
-    }
+
 }

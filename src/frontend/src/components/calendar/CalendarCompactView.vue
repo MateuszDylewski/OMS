@@ -131,9 +131,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-/*div {
-  border: red 1px solid;
-}*/
 .table th:first-child,
 .table td:first-child {
   position: sticky;

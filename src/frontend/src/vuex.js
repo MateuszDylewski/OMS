@@ -21,8 +21,6 @@ const store = new Vuex.Store({
             state.user = user;
         }
     }
-    /* TODO: nie kasuje usera po f5 dzięki refreshtokenowi w moutend app.vue*/
 });
-
 
 export default store;

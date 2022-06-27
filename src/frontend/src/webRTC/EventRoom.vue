@@ -11,10 +11,6 @@ import {joinRoomInit} from './script';
 
 export default {
   name: 'EventRoom',
-  data() {
-    return {
-    }
-  },
   mounted() {
     joinRoomInit();
   }

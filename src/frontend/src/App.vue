@@ -80,7 +80,6 @@ export default {
 
   }
   .mainBox {
-    /*border: 2px solid red;*/
     margin-left: 220px;
   }
 }
@@ -88,6 +87,5 @@ export default {
   .sidebar{
     display: none;
   }
-  /*TO DO wyznaczyć wielokość mainBox dla urządzeń mobilnych*/
 }
 </style>
