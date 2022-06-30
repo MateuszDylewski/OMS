@@ -3,10 +3,6 @@ package com.oms.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.oms.repository.UserRepository;
-import com.oms.services.UserService;
-import com.sun.tools.jconsole.JConsoleContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -65,8 +61,6 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         response.addCookie(accessTokenCookie);
         response.addCookie(refreshTokenCookie);
-        /*response.setHeader("accessToken", accessToken);
-        response.setHeader("refreshToken", refreshToken);*/
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", accessToken);
         tokens.put("refreshToken", refreshToken);
